@@ -3,5 +3,14 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [svelte()]
+  plugins: [svelte()],
+  server:{
+    host:"localhost",
+    port:5173,
+    open:true,
+    https:false,
+    proxy:{
+      "/api":"http://localhost:8082"
+    }
+  }
 })

@@ -40,6 +40,7 @@
 
 <style>
     .chat-room {
+    
         float: right;
     }
 </style>
