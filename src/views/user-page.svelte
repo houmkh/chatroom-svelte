@@ -2,7 +2,6 @@
     import UserList from "../components/user-list.svelte";
     import ChatRoom from "../components/chat-room.svelte";
     import { replace } from "svelte-spa-router";
-    import { RadioButtonGroup } from "carbon-components-svelte";
 
     export let params = {};
 
