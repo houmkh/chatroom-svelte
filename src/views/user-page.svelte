@@ -19,12 +19,11 @@
                     wsConn.close();
                     wsConn = null;
                 }
-                alert("websocket连接已断开");
+                // alert("websocket连接已断开");
                 replace("/");
             };
             wsConn.onmessage = function (ret) {
                 console.log(ret.data);
-                // handleMessage(ret.data);
                 let data = JSON.parse(ret.data);
                 if (data.type === "msg") {
                     //消息
@@ -87,24 +86,6 @@
         user_list = [];
     let messages = [];
 
-    // async function handleMessage(d) {
-    //     let data = JSON.parse(d);
-    //     if (data.type === "msg") {
-    //         //消息
-    //         messages.push(data.data);
-    //         console.log(messages);
-    //         // let msgnode = document.getElementById("msg");
-    //         // let node = document.createElement("div");
-    //         // node.innerHTML = `<div>From: ${data.data.from} To: ${data.data.to}</div>
-    //         // <div>${data.data.context}</div>`;
-    //         // msgnode.appendChild(node);
-    //     } else if (data.type === "room_info") {
-    //         //房间信息
-    //         user_num = await data.data.roomInfo.online_num;
-    //         user_list = await data.data.roomInfo.online_user_list;
-    //     }
-    // }
-
     let newmessage = { context: "", to: null };
     $: newmessage.to = choose_user;
     function sendMessage() {
@@ -134,22 +115,27 @@
 <div class="page">
     <h2>welcome {username}</h2>
     <div>聊天室有 {num} 人</div>
-    {#each user_list as user}
+    <div class="userlist">
+        {#each user_list as user}
+            <div>
+                <label
+                    ><input
+                        type="radio"
+                        bind:group={choose_user}
+                        value={user.uid}
+                    />
+                    {user.username}
+                </label>
+            </div>
+        {/each}
+    </div>
+    <div class="chat_area">
         <div>
-            <label
-                ><input
-                    type="radio"
-                    bind:group={choose_user}
-                    value={user.uid}
-                />
-                {user.username}
-            </label>
+            <div id="msg" />
+            <textarea cols="50" rows="6" bind:value={newmessage.context} />
         </div>
-    {/each}
-    <!-- <div id="userlist" /> -->
-    <div id="msg" />
-    <textarea cols="40" rows="6" bind:value={newmessage.context} />
-    <button on:click={sendMessage}>发送消息</button>
+        <button on:click={sendMessage} style="float: right;">发送消息</button>
+    </div>
 </div>
 
 <style>
@@ -161,22 +147,28 @@
         border: 1px solid gainsboro;
         border-radius: 5px;
         margin: 30px auto auto auto;
-        justify-content: center;
-        align-items: center;
+        /* justify-content: center; */
+        /* align-items: center; */
         height: 600px;
+    }
+    .userlist {
+        float: left;
     }
     #msg {
         border: 1px solid gray;
         margin: 10px;
         width: 200px;
     }
-    .msgnode {
-        border-bottom: 1px solid grey;
-    }
+
     button {
-        width: 100px;
-        height: 50px;
-        margin: 10px;
+        width: 80px;
+        height: 35px;
+        /* margin: 10px; */
         border-radius: 5px;
+        border: 1px solid black;
+    }
+    .chat_area {
+        /* float: right; */
+        box-sizing: border-box;
     }
 </style>

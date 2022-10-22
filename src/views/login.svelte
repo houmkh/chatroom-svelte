@@ -1,13 +1,4 @@
 <script>
-    import {
-        FluidForm,
-        TextInput,
-        PasswordInput,
-        ButtonSet,
-        Button,
-        TextInputSkeleton,
-    } from "carbon-components-svelte";
-
     import { params, replace } from "svelte-spa-router";
 
     let username = "",
@@ -27,17 +18,34 @@
                     password: password,
                 }),
             })
-            // .then(console.log);
-            .then((value) =>value.json())
-                .catch( console.error)
+                // .then(console.log);
+                .then((value) => value.json())
+                .catch(console.error)
                 .then((value) => {
+                    if (value.serve_status == -1) {
+                        alert("密码错误");
+                        username = "";
+                        password = "";
+                        return;
+                    }
+                    if(value.serve_status == -300){
+                        alert("用户不存在");
+                        username = "";
+                        password = "";
+                        return;
+                    }
                     uid = value.uid;
-                    // if(value.privilege == 1)
-                    replace_url = "/chat/" + uid + "/" + username;
+                    if (value.privilege == 1)
+                        replace_url = "/chat/" + uid + "/" + username;
+                    else if (value.privilege == 2)
+                        replace_url = "/user_management_center";
                     console.log(value);
                     replace(replace_url);
                 })
                 .catch(console.error);
+        }
+        else{
+            alert("请输入用户名和密码");
         }
     }
     function rigester() {
@@ -58,66 +66,72 @@
                 return value.json();
             });
         }
+        else{
+            alert("请输入用户名和密码");
+        }
     }
 
-    /*
-    TODO
-    1.实现将登录数据传给后台
-    2.实现将注册数据传给后台
-    */
 </script>
 
-<div class="login-form">
-    <!-- {invalid}
-    invalidText="用户名不能为空" -->
-    <!-- <FluidForm>
-        <TextInput
-            labelText="用户名"
-            placeholder="请输入用户名"
-            required
-            bind:value={username}
-        />
-        <TextInput
-            required
-            type="password"
-            labelText="密码"
-            placeholder="请输入密码"
-            bind:value={password}
-        />
-        <ButtonSet>
-            <Button type="submit" on:click={login}>Log in</Button>
-            <Button kind="ghost" on:click={rigester}>Sign up</Button>
-        </ButtonSet>
-    </FluidForm> -->
-    <input placeholder="请输入用户名" bind:value={username} />
-    <input type="password" placeholder="请输入密码" bind:value={password} />
-    <button on:click={login}>Log in</button>
-    <button on:click={rigester}>Sign up</button>
+<div class="page">
+    <div class="login-form">
+        <label
+            >用户名
+            <input
+                placeholder="请输入用户名"
+                bind:value={username}
+                required
+            /></label
+        >
+        <label>
+            密码<input
+                type="password"
+                placeholder="请输入密码"
+                bind:value={password}
+                required
+            /></label
+        >
+
+        <div class="button_group">
+            <button on:click={login}>Log in</button>
+            <button on:click={rigester}>Sign up</button>
+        </div>
+    </div>
 </div>
 
 <style>
+    .page,
     .login-form {
-        width: 800px;
-        height: 500px;
-        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-flow: column;
+    }
+    .login-form {
+        width: 500px;
+        height: 300px;
         border: 1px solid gainsboro;
         border-radius: 5px;
-        margin: auto;
-        display: flex;
-        flex-flow: column;
-        justify-content: center;
+        /* box-shadow: grey; */
     }
-    input{
-        height: 45px;
+    input {
+        width: 250px;
+        height: 25px;
         margin: 5px;
         padding: 3px;
         border-radius: 5px;
     }
-    button{
-        height: 40px;
-        margin: 5px;
+    button {
+        border: 1px solid black;
+        height: 30px;
+        margin: 10px;
         padding: 3px;
         border-radius: 5px;
-        background-color: blanchedalmond;
+        background-color: #4888d6;
+        width: 60px;
+        color: white;
+    }
+    button:hover {
+        background-color: rgb(47, 98, 192);
     }
 </style>
