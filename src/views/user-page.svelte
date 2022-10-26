@@ -1,8 +1,6 @@
 <script>
-    import UserList from "../components/user-list.svelte";
-    import ChatRoom from "../components/chat-room.svelte";
-    import { replace } from "svelte-spa-router";
-
+    import { onMount } from "svelte";
+    import { push, replace } from "svelte-spa-router";
     export let params = {};
 
     let wsConn;
@@ -24,16 +22,16 @@
             wsConn.onmessage = function (ret) {
                 console.log(ret.data);
                 let data = JSON.parse(ret.data);
+                let msgnode = document.getElementById("msg");
                 if (data.type === "msg") {
                     //消息
                     messages.push(data.data);
                     console.log(messages);
-                    let msgnode = document.getElementById("msg");
                     let node = document.createElement("div");
                     node.innerHTML = `<div>From: ${data.data.from_name} To: ${data.data.to_name}</div>
                     <div>${data.data.context}</div>`;
                     node.className = "msgnode";
-                    msgnode.appendChild(node);
+                    msgnode.append(node);
                 } else if (data.type === "room_info") {
                     //房间信息
                     user_num = data.data.online_num;
@@ -52,6 +50,12 @@
                         node.className = "userlist_node";
                         userlist_node.appendChild(node);
                     }
+                } else if (data.type === "file") {
+                    let node = document.createElement("div");
+                    node.innerHTML = `<div>From: ${data.data.from_name} To: ${data.data.to_name}</div>
+                    <img src="${data.data.file_context}"/>`;
+                    node.className = "msgnode";
+                    msgnode.append(node);
                 }
             };
             wsConn.onerror = function () {
@@ -65,10 +69,17 @@
             alert(e.message);
         }
     }
-    wsInit();
+    onMount(() => {
+        wsInit();
+    });
+
     let uid = params.uid,
         username = params.username;
     let choose_user = uid;
+    function switchToFile() {
+        let url = "/file_management/" + uid + "/" + username;
+        push(url);
+    }
 
     function sendUserInfo() {
         let userinfo = {
@@ -78,6 +89,7 @@
                 username: username,
             },
         };
+
         wsConn.send(JSON.stringify(userinfo));
     }
     $: num = user_num;
@@ -109,8 +121,48 @@
         wsConn.send(JSON.stringify(msg));
         newmessage.context = "";
     }
+
+    /*
+        file{
+            from:
+            to:
+            from_name:
+            to_name:
+            file_name:
+            file_type:
+            file_content
+        }
+*/
+    // let files;
+    // $: if (files) {
+    //     console.log(files[0]);
+    // }
+    // function sendFile() {
+    //     let reader = new FileReader();
+    //     reader.readAsDataURL(files[0]);
+    //     reader.addEventListener("loadend", (event) => {
+    //         let msg = {
+    //             type: "file",
+    //             data: {
+    //                 from: uid,
+    //                 to: choose_user,
+    //                 file_name: files[0].name,
+    //                 file_type: files[0].type,
+    //                 file_context: event.target.result,
+    //             },
+    //         };
+
+    //         // wsConn.send(JSON.stringify(msg));
+    //         wsConn.send(JSON.stringify(msg));
+    //         console.log(JSON.stringify(msg));
+    //     });
+    // }
 </script>
 
+<div class="bar">
+    <div>chat</div>
+    <button on:click={switchToFile}>file</button>
+</div>
 <div class="page">
     <h2>welcome {username}</h2>
     <div>聊天室有 {num} 人</div>
@@ -133,7 +185,13 @@
             <div id="msg" />
             <textarea cols="50" rows="6" bind:value={newmessage.context} />
         </div>
-        <button on:click={sendMessage} style="float: right;">发送消息</button>
+        <button on:click={sendMessage}>发送消息</button>
+        <!-- <div>
+            <input type="file" id="input_file" accept="image/jpeg" bind:files />
+            <button on:click={sendFile}>发送文件</button>
+        </div> -->
+
+        <!-- <button type="submit" /> -->
     </div>
 </div>
 

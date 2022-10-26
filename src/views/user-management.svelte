@@ -1,5 +1,5 @@
 <script>
-    import { identity, validate_each_keys } from "svelte/internal";
+    import { identity, onMount, validate_each_keys } from "svelte/internal";
 
     // 获取所有用户信息
     let user_list = [];
@@ -19,7 +19,9 @@
                 user_list = value;
             });
     }
-    show_all_users_info();
+    onMount(() => {
+        show_all_users_info();
+    });
 
     function delete_user(id) {
         let url = "/api/admin/delete_user";
@@ -64,7 +66,7 @@
 </script>
 
 <div class="page">
-    <table width="600" >
+    <table width="600">
         <tr>
             <th>用户编号</th>
             <th>用户名</th>
@@ -74,12 +76,6 @@
         {#each user_list as user}
             <tr>
                 <td>
-                    <!-- <input
-                        type="radio"
-                        bind:group={uid}
-                        value={user.uid}
-                    />{user.uid}</td
-                > -->
                     {user.uid}
                 </td><td>
                     <input
@@ -115,11 +111,10 @@
     td {
         text-align: center;
         border: 1px solid grey;
-        border-collapse:collapse;
-        
+        border-collapse: collapse;
     }
-    th{
-        background-color:rgba(240, 234, 125, 0.447);
+    th {
+        background-color: rgba(240, 234, 125, 0.447);
     }
     button {
         width: 50px;
