@@ -36,7 +36,7 @@
                     }
                     uid = value.uid;
                     if (value.privilege == 1)
-                        replace_url = "/chat/" + uid + "/" + username;
+                        replace_url = "/file_management/" + uid + "/" + username;
                     else if (value.privilege == 2)
                         replace_url = "/user_management_center";
                     console.log(value);
