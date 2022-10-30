@@ -7,7 +7,7 @@ export default defineConfig({
   server:{
     host:"localhost",
     port:5173,
-    open:true,
+    open:false,
     https:false,
     proxy:{
       "/api":"http://localhost:8082"
