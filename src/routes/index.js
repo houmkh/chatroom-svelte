@@ -1,11 +1,24 @@
-const metaRouters = import.meta.glob("./modules/*.js", {
+const metaRouters = import.meta.glob("./modules/**/*.js", {
     eager: true
 });
+console.log(metaRouters);
 
 export const routerArray = [];
-Object.keys(metaRouters).forEach((item)=>{
-    Object.keys(metaRouters[item]).forEach(key=>{
-        routerArray.push(...metaRouters[item][key]);
+
+
+let routes = {};
+
+Object.keys(metaRouters).forEach((item) => {
+    Object.keys(metaRouters[item]).forEach(key => {
+        routerArray.push(metaRouters[item][key])
+        // let r = Object.assign(metaRouters[item][key],routes)
+        // routes = r
+        // console.log(metaRouters[item][key]);
+        routes = Object.assign(metaRouters[item][key],routes)
     })
 
-})
+
+});
+
+console.log(routes)
+export default routes;
