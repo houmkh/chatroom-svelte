@@ -1,7 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import { push, replace } from "svelte-spa-router";
-
+    import Tab from "@smui/tab";
+    import TabBar from "@smui/tab-bar";
+    import Button from "@smui/button";
+    import IconButton from "@smui/icon-button";
+    import Snackbar, { Label, Actions } from "@smui/snackbar";
     export let params = {};
 
     let files;
@@ -10,9 +14,11 @@
     /**
      * 以表单形式发送文件
      */
+    let snackbarWarning;
     function upload() {
         if (files == undefined) {
-            alert("请选择文件");
+            // alert("请选择文件");
+            snackbarWarning.open();
             return;
         }
         let url = "/api/user/upload_file";
@@ -94,22 +100,42 @@
         let url = "/chat/" + uid + "/" + username;
         replace(url);
     }
+    let active = "File";
+    $: if (active == "File") {
+        switchToFile();
+    } else if (active == "ChatRoom") {
+        switchToChat();
+    }
 </script>
 
 <div class="file_management_page">
-    <div class="bar">
+    <!-- <div class="bar">
         <button on:click={switchToChat} id="chat_button">chatroom</button>
         <button on:click={switchToFile} id="file_button">file</button>
-    </div>
-
+    </div> -->
+    <TabBar tabs={["ChatRoom", "File"]} let:tab bind:active>
+        <Tab {tab} minWidth>
+            <Label>{tab}</Label>
+        </Tab>
+    </TabBar>
     <form>
         <label for="file">
             <input type="file" name="file" id="file" bind:files />
         </label>
-        <button type="submit" on:click={upload} id="upload_button"
+        <!-- <button type="submit" on:click={upload} id="upload_button"
             >上传文件</button
-        >
+        > -->
+        <Button on:click={upload} variant="raised" type="submit">
+            <Label>上传文件</Label>
+        </Button>
     </form>
+    <Snackbar bind:this={snackbarWarning} class="demo-warning">
+        <Label>请选择文件</Label>
+        <Actions>
+            <IconButton class="material-icons" title="Dismiss">close</IconButton
+            >
+        </Actions>
+    </Snackbar>
     <div class="file_list">
         {#each filelist as file}
             <div>
@@ -142,7 +168,7 @@
         background-color: rgb(254, 254, 254);
         /* border: 1px solid lightgray; */
     }
-    .bar {
+    /* .bar {
         width: 700px;
         display: flex;
         flex-flow: row;
@@ -172,11 +198,12 @@
     }
     #upload_button:hover {
         background-color: rgba(1, 124, 255, 0.718);
-    }
+    } */
     #file {
         height: 35px;
     }
     form {
         margin-top: 30px;
     }
+
 </style>

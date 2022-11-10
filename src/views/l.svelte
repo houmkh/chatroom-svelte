@@ -1,5 +1,6 @@
 <script>
     import { params, replace } from "svelte-spa-router";
+    import Button, { Label } from '@smui/button';
 
     let username = "",
         password = "";
@@ -73,6 +74,7 @@
 
 </script>
 
+
 <div class="page">
     <div class="login-form">
         <label
@@ -93,7 +95,10 @@
         >
 
         <div class="button_group">
-            <button on:click={login}>Log in</button>
+            <!-- <button on:click={login}>Log in</button> -->
+            <Button variant="raised">
+                <Label>Log in</Label>
+            </Button>
             <button on:click={rigester}>Sign up</button>
         </div>
     </div>

@@ -1,6 +1,9 @@
 <script>
     import { params, replace } from "svelte-spa-router";
-
+    import Button, { Label } from "@smui/button";
+    import Textfield from "@smui/textfield";
+    import Icon from "@smui/textfield/icon";
+    import HelperText from "@smui/textfield/helper-text";
     let username = "",
         password = "";
 
@@ -28,7 +31,7 @@
                         password = "";
                         return;
                     }
-                    if(value.serve_status == -300){
+                    if (value.serve_status == -300) {
                         alert("用户不存在");
                         username = "";
                         password = "";
@@ -36,15 +39,15 @@
                     }
                     uid = value.uid;
                     if (value.privilege == 1)
-                        replace_url = "/file_management/" + uid + "/" + username;
+                        replace_url =
+                            "/file_management/" + uid + "/" + username;
                     else if (value.privilege == 2)
                         replace_url = "/user_management_center";
                     console.log(value);
                     replace(replace_url);
                 })
                 .catch(console.error);
-        }
-        else{
+        } else {
             alert("请输入用户名和密码");
         }
     }
@@ -65,36 +68,62 @@
             }).then((value) => {
                 return value.json();
             });
-        }
-        else{
+        } else {
             alert("请输入用户名和密码");
         }
     }
-
 </script>
 
 <div class="page">
     <div class="login-form">
-        <label
+        <!-- <label
             >用户名
             <input
                 placeholder="请输入用户名"
                 bind:value={username}
                 required
             /></label
+        > -->
+        <Textfield
+            variant="outlined"
+            bind:value={username}
+            label="用户名"
+            required
+            style="width: 300px;height: 50px;"
         >
-        <label>
+            <HelperText slot="helper">请输入用户名</HelperText>
+        </Textfield>
+        <Textfield
+            variant="outlined"
+            bind:value={password}
+            label="密码"
+            required
+            style="width: 300px;height: 50px;"
+        >
+            <HelperText slot="helper">请输入密码</HelperText>
+        </Textfield>
+        <!-- <label>
             密码<input
                 type="password"
                 placeholder="请输入密码"
                 bind:value={password}
                 required
             /></label
-        >
+        > -->
 
-        <div class="button_group">
-            <button on:click={login}>Log in</button>
-            <button on:click={rigester}>Sign up</button>
+        <div class="button_group" style="margin: 10px;">
+            <!-- <button on:click={login}>Log in</button> -->
+            <Button variant="raised" on:click={login} style="margin:auto 10px;">
+                <Label>Log in</Label>
+            </Button>
+            <!-- <button on:click={rigester}>Sign up</button> -->
+            <Button
+                variant="outlined"
+                on:click={rigester}
+                style="margin:auto 10px;"
+            >
+                <Label>Log in</Label>
+            </Button>
         </div>
     </div>
 </div>
@@ -114,24 +143,15 @@
         border-radius: 5px;
         /* box-shadow: grey; */
     }
-    input {
+    /* input {
         width: 250px;
         height: 25px;
         margin: 5px;
         padding: 3px;
         border-radius: 5px;
-    }
-    button {
-        border: 1px solid black;
-        height: 30px;
-        margin: 10px;
-        padding: 3px;
-        border-radius: 5px;
-        background-color: #4888d6;
-        width: 60px;
-        color: white;
-    }
+    } */
+    /*
     button:hover {
         background-color: rgb(47, 98, 192);
-    }
+    } */
 </style>

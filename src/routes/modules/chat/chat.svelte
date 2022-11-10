@@ -1,6 +1,8 @@
 <script>
     import { onMount } from "svelte";
     import { push, replace } from "svelte-spa-router";
+    import Tab,{Label} from "@smui/tab";
+    import TabBar from "@smui/tab-bar";
     export let params = {};
     let messages = [];
 
@@ -83,6 +85,13 @@
 
         wsConn.send(JSON.stringify(userinfo));
     }
+    let active = "ChatRoom";
+    $: if (active == "File") {
+        switchToFile();
+    } else if (active == "ChatRoom") {
+        switchToChat();
+    }
+
 
     $: num = user_num;
     let user_num = 1,
@@ -120,10 +129,15 @@
 
 <div class="page">
     <div class="left">
-        <div class="bar">
+        <!-- <div class="bar">
             <button on:click={switchToChat} id="chat_button">chatroom</button>
             <button on:click={switchToFile} id="file_button">file</button>
-        </div>
+        </div> -->
+        <TabBar tabs={["ChatRoom", "File"]} let:tab bind:active>
+            <Tab {tab} minWidth>
+                <Label>{tab}</Label>
+            </Tab>
+        </TabBar>
         <div class="roominfo">
             <h2>welcome {username}</h2>
             <div>聊天室有 {num} 人</div>
