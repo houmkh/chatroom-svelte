@@ -127,7 +127,7 @@
                 on:click={rigester}
                 style="margin:auto 10px;"
             >
-                <Label>Log in</Label>
+                <Label>Sign up</Label>
             </Button>
 
             <Snackbar bind:this={snackbarWarning} class="demo-warning">
