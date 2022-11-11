@@ -201,7 +201,7 @@
     .user_radio {
         border-bottom: 1px solid lightgray;
     }
-    #chat_button,
+    /* #chat_button,
     #file_button,
     #send_button {
         border: 0px;
@@ -215,7 +215,7 @@
     #file_button:hover {
         background-color: rgb(1, 122, 255);
         color: white;
-    }
+    } */
     #send_button {
         border: 0px;
         background-color: rgb(1, 122, 255);

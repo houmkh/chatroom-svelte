@@ -3,6 +3,8 @@
     import Button, { Label } from "@smui/button";
     import Textfield from "@smui/textfield";
     import Icon from "@smui/textfield/icon";
+    import IconButton from "@smui/icon-button";
+    import Snackbar, { Actions } from "@smui/snackbar";
     import HelperText from "@smui/textfield/helper-text";
     let username = "",
         password = "";
@@ -48,7 +50,7 @@
                 })
                 .catch(console.error);
         } else {
-            alert("请输入用户名和密码");
+            snackbarWarning.open()
         }
     }
     function rigester() {
@@ -69,12 +71,15 @@
                 return value.json();
             });
         } else {
-            alert("请输入用户名和密码");
+            // alert("请输入用户名和密码");
+            snackbarWarning.open()
         }
     }
+    let snackbarWarning;
 </script>
 
 <div class="page">
+
     <div class="login-form">
         <!-- <label
             >用户名
@@ -124,6 +129,14 @@
             >
                 <Label>Log in</Label>
             </Button>
+
+            <Snackbar bind:this={snackbarWarning} class="demo-warning">
+                <Label>请输入用户名和密码</Label>
+                <Actions>
+                    <IconButton class="material-icons" title="Dismiss">×</IconButton
+                    >
+                </Actions>
+            </Snackbar>
         </div>
     </div>
 </div>
@@ -135,12 +148,16 @@
         justify-content: center;
         align-items: center;
         flex-flow: column;
+        align-content: center;
+
     }
+
     .login-form {
         width: 500px;
         height: 300px;
         border: 1px solid gainsboro;
         border-radius: 5px;
+
         /* box-shadow: grey; */
     }
     /* input {
@@ -154,4 +171,5 @@
     button:hover {
         background-color: rgb(47, 98, 192);
     } */
+    @material/elevation/mdc-elevation
 </style>
