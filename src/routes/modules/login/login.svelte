@@ -32,25 +32,25 @@
                         username = "";
                         password = "";
                         return;
-                    }
-                    if (value.serve_status == -300) {
+                    } else if (value.serve_status == -300) {
                         alert("用户不存在");
                         username = "";
                         password = "";
                         return;
+                    } else if (value.serve_status == 200) {
+                        uid = value.data.uid;
+                        if (value.data.privilege == 1)
+                            replace_url =
+                                "/file_management/" + uid + "/" + username;
+                        else if (value.data.privilege == 2)
+                            replace_url = "/user_management_center";
+                        console.log(value);
+                        replace(replace_url);
                     }
-                    uid = value.uid;
-                    if (value.privilege == 1)
-                        replace_url =
-                            "/file_management/" + uid + "/" + username;
-                    else if (value.privilege == 2)
-                        replace_url = "/user_management_center";
-                    console.log(value);
-                    replace(replace_url);
                 })
                 .catch(console.error);
         } else {
-            snackbarWarning.open()
+            snackbarWarning.open();
         }
     }
     function rigester() {
@@ -71,24 +71,15 @@
                 return value.json();
             });
         } else {
-            // alert("请输入用户名和密码");
-            snackbarWarning.open()
+            snackbarWarning.open();
         }
     }
     let snackbarWarning;
 </script>
 
 <div class="page">
-
     <div class="login-form">
-        <!-- <label
-            >用户名
-            <input
-                placeholder="请输入用户名"
-                bind:value={username}
-                required
-            /></label
-        > -->
+
         <Textfield
             variant="outlined"
             bind:value={username}
@@ -103,6 +94,7 @@
             bind:value={password}
             label="密码"
             required
+            type="password"
             style="width: 300px;height: 50px;"
         >
             <HelperText slot="helper">请输入密码</HelperText>
@@ -133,7 +125,8 @@
             <Snackbar bind:this={snackbarWarning} class="demo-warning">
                 <Label>请输入用户名和密码</Label>
                 <Actions>
-                    <IconButton class="material-icons" title="Dismiss">×</IconButton
+                    <IconButton class="material-icons" title="Dismiss"
+                        ><box-icon name="x" /></IconButton
                     >
                 </Actions>
             </Snackbar>
@@ -142,6 +135,14 @@
 </div>
 
 <style>
+    .page {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        width: calc(100vw - 18px);
+        height: calc(100vh - 18px);
+    }
     .page,
     .login-form {
         display: flex;
@@ -149,7 +150,6 @@
         align-items: center;
         flex-flow: column;
         align-content: center;
-
     }
 
     .login-form {
@@ -157,6 +157,7 @@
         height: 300px;
         border: 1px solid gainsboro;
         border-radius: 5px;
+        box-shadow: 10px 10px 5px 1px rgba(0, 0, 255, 0.2);
 
         /* box-shadow: grey; */
     }
@@ -171,5 +172,4 @@
     button:hover {
         background-color: rgb(47, 98, 192);
     } */
-    @material/elevation/mdc-elevation
 </style>

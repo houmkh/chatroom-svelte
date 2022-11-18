@@ -16,5 +16,5 @@ Object.keys(metaRouters).forEach((item) => {
 
 });
 
-console.log(routes)
+// console.log(routes)
 export default routes;

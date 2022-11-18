@@ -1,16 +1,17 @@
 <script>
     import { onMount } from "svelte";
     import { push, replace } from "svelte-spa-router";
-    import Tab from "@smui/tab";
-    import TabBar from "@smui/tab-bar";
+
     import Button from "@smui/button";
     import IconButton from "@smui/icon-button";
     import Snackbar, { Label, Actions } from "@smui/snackbar";
+    import "boxicons";
     export let params = {};
 
     let files;
     let uid = params.uid;
     let username = params.username;
+    let focused = false;
     /**
      * 以表单形式发送文件
      */
@@ -53,9 +54,11 @@
                 return v.json();
             })
             .then((v) => {
-                filelist.push(...v);
-                filelist = filelist;
-                console.log(filelist);
+                if (v.serve_status == 200) {
+                    filelist.push(...v.data);
+                    filelist = filelist;
+                    // console.log(filelist);
+                }
             });
     }
     /**
@@ -106,50 +109,93 @@
     } else if (active == "ChatRoom") {
         switchToChat();
     }
+    function quit() {
+        let url = "/";
+        replace(url);
+    }
 </script>
 
+<!-- <svelte:head>
+    <link
+        href="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"
+        rel="stylesheet"
+    />
+</svelte:head> -->
+
 <div class="file_management_page">
-    <!-- <div class="bar">
-        <button on:click={switchToChat} id="chat_button">chatroom</button>
-        <button on:click={switchToFile} id="file_button">file</button>
-    </div> -->
-    <TabBar tabs={["ChatRoom", "File"]} let:tab bind:active>
+    <div class="left-bar">
+        <box-icon
+            class="icon_btn"
+            name="chat"
+            color="#6200ee"
+            on:click={switchToChat}
+        />
+        <box-icon
+            class="icon_btn"
+            name="folder"
+            color="#6200ee"
+            on:click={switchToFile}
+        />
+        <box-icon
+            class="icon_btn"
+            name="log-out-circle"
+            color="#6200ee"
+            on:click={quit}
+        />
+    </div>
+    <!-- <TabBar tabs={["ChatRoom", "File"]} let:tab bind:active>
         <Tab {tab} minWidth>
             <Label>{tab}</Label>
         </Tab>
-    </TabBar>
-    <form>
-        <label for="file">
-            <input type="file" name="file" id="file" bind:files />
-        </label>
-        <!-- <button type="submit" on:click={upload} id="upload_button"
-            >上传文件</button
-        > -->
-        <Button on:click={upload} variant="raised" type="submit">
-            <Label>上传文件</Label>
-        </Button>
-    </form>
-    <Snackbar bind:this={snackbarWarning} class="demo-warning">
-        <Label>请选择文件</Label>
-        <Actions>
-            <IconButton class="material-icons" title="Dismiss">close</IconButton
-            >
-        </Actions>
-    </Snackbar>
-    <div class="file_list">
-        {#each filelist as file}
-            <div>
-                <button
-                    class="download_button"
-                    on:click={() => downLoad(file.fid, file.file_name)}
-                    >{file.file_name}</button
+    </TabBar> -->
+    <div class="right">
+        <form>
+            <label for="file">
+                <input type="file" name="file" id="file" bind:files />
+            </label>
+
+            <Button on:click={upload} variant="raised" type="submit">
+                <Label>上传文件</Label>
+            </Button>
+        </form>
+        <Snackbar bind:this={snackbarWarning} class="demo-warning">
+            <Label>请选择文件</Label>
+            <Actions>
+                <IconButton class="material-icons" title="Dismiss"
+                    ><box-icon name="x" /></IconButton
                 >
-            </div>
-        {/each}
+            </Actions>
+        </Snackbar>
+        <div class="file_list">
+            {#each filelist as file}
+                <div>
+                    <button
+                        class="download_button"
+                        on:click={() => downLoad(file.fid, file.file_name)}
+                        >{file.file_name}</button
+                    >
+                </div>
+            {/each}
+        </div>
     </div>
 </div>
 
 <style>
+    /* 滚动条 */
+    ::-webkit-scrollbar {
+        width: 7px;
+        height: 1px;
+    }
+    ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        box-shadow: inset 0 0 5px rgb(0 0 0 / 8%);
+        background: #dbdbdb;
+    }
+    ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px rgb(145 145 145 / 20%);
+        border-radius: 10px;
+        background: #ffffff;
+    }
     .download_button {
         background-color: white;
         border: 0px;
@@ -159,51 +205,58 @@
         color: rgb(1, 122, 255);
     }
     .file_management_page {
+        flex-flow: column;
+        width: 745px;
+        box-sizing: border-box;
+        border: 1px solid gainsboro;
+        border-radius: 5px;
+        margin: 30px auto auto auto;
+        height: 600px;
+        /* flex-wrap: wrap; */
+        /* align-items: baseline; */
+        /* align-content: flex-start; */
+        display: grid;
+        grid-template-columns: 1fr 10fr;
+        grid-column-gap: 0px;
+        grid-row-gap: 0px;
+        box-shadow: 10px 10px 5px 1px rgba(0, 0, 255, 0.2);
+        overflow: hidden;
+    }
+    .left-bar {
+        display: flex;
+        flex-flow: column;
+        border-right: 1px solid lightgray;
+        border-bottom: 1px solid lightgray;
+        height: auto;
+        width: 40px;
+        background-color: #f8f4fd;
+        align-items: center;
+    }
+    box-icon {
+        cursor: pointer;
+        height: 50px;
+        width: 30px;
+    }
+
+    .right {
         display: flex;
         flex-flow: column;
         align-items: center;
-        width: 700px;
-        margin: auto;
-        margin-top: 0px;
-        background-color: rgb(254, 254, 254);
-        /* border: 1px solid lightgray; */
-    }
-    /* .bar {
-        width: 700px;
-        display: flex;
-        flex-flow: row;
-    }
-    #chat_button,
-    #file_button {
-        border: 0px;
-        border-bottom: 1px solid lightgray;
-        width: 100px;
-        height: 35px;
-        font-size: 14px;
-        background-color: white;
-    }
-    #chat_button:hover,
-    #file_button:hover {
-        background-color: rgb(1, 122, 255);
-        color: white;
+        overflow: scroll;
     }
 
-    #upload_button {
-        border: 0px;
-        width: 100px;
-        height: 35px;
-        background-color: rgb(1, 122, 255);
-        color: white;
-        border-radius: 5px;
-    }
-    #upload_button:hover {
-        background-color: rgba(1, 124, 255, 0.718);
-    } */
     #file {
         height: 35px;
     }
     form {
         margin-top: 30px;
     }
+    .hide-file-ui :global(input[type="file"]::file-selector-button) {
+        display: none;
+    }
 
+    .hide-file-ui
+        :global(:not(.mdc-text-field--label-floating) input[type="file"]) {
+        color: transparent;
+    }
 </style>
